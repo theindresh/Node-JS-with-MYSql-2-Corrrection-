@@ -1,16 +1,25 @@
 const db = require("../config/db");
+// const bcrypt = require("bcrypt");
 
 const apiController = {
   getData: async (req, res) => {
     try {
-      const results = await db.query("SELECT * FROM your_table");
-      res.json(results);
+      const [results] = await db.query("SELECT * FROM your_table");
+
+      // Extracting and sending only the actual data rows
+      const dataRows = results.map((row) => ({
+        id: row.id,
+        name: row.name,
+        age: row.age,
+        position: row.position,
+      }));
+
+      res.json(dataRows);
     } catch (err) {
       console.error("Error executing query:", err);
       res.status(500).json({ error: "Internal Server Error" });
     }
   },
-
   addData: async (req, res) => {
     const { name, age, position } = req.body;
 
